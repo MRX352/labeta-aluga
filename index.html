@@ -53,7 +53,6 @@
           const [orders, setOrders] = useState([]); 
           const [isChatOpen, setIsChatOpen] = useState(false);
 
-          // Número de WhatsApp da Labeta (para onde a mensagem será enviada)
           const whatsappNumber = "5521981438824";
           const whatsappMessage = encodeURIComponent("Olá! Gostaria de fazer um orçamento de aluguel de louças.");
           const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
@@ -63,70 +62,39 @@
             alert(`${product.name} adicionado!`);
           };
 
-          // Função para remover item do carrinho
+          // --- NOVA FUNÇÃO: REMOVER DO CARRINHO ---
           const removeFromCart = (indexToRemove) => {
+            // Cria um novo array filtrando o item que tem o índice igual ao clicado
             const newCart = cart.filter((_, index) => index !== indexToRemove);
             setCart(newCart);
           };
 
-          // Função para agrupar itens (usada no Carrinho e na Mensagem)
+          const submitOrder = () => {
+            const newOrder = {
+              id: Math.floor(Math.random() * 10000),
+              items: cart,
+              total: cart.reduce((acc, item) => acc + item.price, 0),
+              status: 'Em Análise',
+              customer: 'Cliente Novo',
+              date: new Date().toLocaleDateString()
+            };
+            setOrders([...orders, newOrder]);
+            setCart([]);
+            alert("Pedido enviado! Nossa equipe confirmará via WhatsApp.");
+          };
+
+          const updateStatus = (orderId, newStatus) => {
+            setOrders(orders.map(order => 
+              order.id === orderId ? { ...order, status: newStatus } : order
+            ));
+          };
+
           const groupItems = (items) => {
             const counts = {};
             items.forEach(item => {
               counts[item.name] = (counts[item.name] || 0) + 1;
             });
             return Object.entries(counts); 
-          };
-
-
-          // --- FUNÇÃO submitOrder ATUALIZADA COM O COMANDO DO WHATSAPP ---
-          const submitOrder = () => {
-            const now = new Date();
-            // Obtém o horário formatado (Ex: 02:15)
-            const orderTime = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-            // 1. CONSTRUÇÃO DA MENSAGEM DO WHATSAPP
-            let orderSummary = `✅ *NOVO PEDIDO DE ORÇAMENTO LABETA* ✅\n\n`;
-            orderSummary += `📅 *Horário do Pedido:* ${orderTime}\n\n`; // Inclui o horário
-            orderSummary += `📝 *Itens Solicitados*:\n`;
-
-            // Agrupa e lista os itens
-            const grouped = groupItems(cart);
-            const totalValue = cart.reduce((acc, item) => acc + item.price, 0);
-
-            grouped.forEach(([name, qtd]) => {
-                orderSummary += `- ${qtd}x ${name}\n`;
-            });
-
-            orderSummary += `\n💵 *Total Estimado:* R$ ${totalValue.toFixed(2)}\n\n`;
-            orderSummary += `Aguarde a confirmação da nossa equipe!`;
-
-            // Codifica a mensagem para URL e cria o link final
-            const encodedClientMessage = encodeURIComponent(orderSummary);
-            const clientWhatsappLink = `https://wa.me/${whatsappNumber}?text=${encodedClientMessage}`;
-            
-            // 2. SALVAR O PEDIDO NO ADMIN
-            const newOrder = {
-              id: Math.floor(Math.random() * 10000),
-              items: cart,
-              total: totalValue,
-              status: 'Em Análise',
-              customer: 'Cliente Novo',
-              date: now.toLocaleDateString()
-            };
-            setOrders([...orders, newOrder]);
-            setCart([]);
-            alert("Pedido enviado! Uma nova janela será aberta para você confirmar via WhatsApp.");
-            
-            // 3. ABRIR WHATSAPP COM A MENSAGEM
-            window.open(clientWhatsappLink, '_blank');
-          };
-          // --- FIM DA FUNÇÃO submitOrder ATUALIZADA ---
-
-          const updateStatus = (orderId, newStatus) => {
-            setOrders(orders.map(order => 
-              order.id === orderId ? { ...order, status: newStatus } : order
-            ));
           };
 
           return (
