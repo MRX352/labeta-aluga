@@ -1,322 +1,354 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Labeta Mesa Posta</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Labeta Mesa Posta</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <style>
-        body { font-family: 'Roboto', sans-serif; }
-        h1, h2, h3 { font-family: 'Playfair Display', serif; }
-    </style>
+    <style>
+        body { font-family: 'Roboto', sans-serif; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+    </style>
 </head>
 <body>
 
-    <div id="root"></div>
+    <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState } = React;
+    <script type="text/babel">
+        const { useState } = React;
 
-        // --- ÍCONES ---
-        const ShoppingCart = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>;
-        const MessageCircle = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>;
-        const Check = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
-        const X = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
-        const User = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
-        const Phone = ({size = 24, fill = "none"}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>;
-        // Novo ícone de Lixeira
-        const Trash = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>;
+        // --- ÍCONES ---
+        const ShoppingCart = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>;
+        const MessageCircle = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>;
+        const Check = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
+        const X = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
+        const User = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
+        const Phone = ({size = 24, fill = "none"}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>;
+        // Novo ícone de Lixeira
+        const Trash = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>;
 
-        // --- DADOS ---
-        const products = [
-          { id: 1, name: "Rechaud Inox 8L", price: 50.00, category: "Rechauds", desc: "Banho Maria para manter a comida quente." },
-          { id: 2, name: "Prato Prisma Refeição", price: 1.85, category: "Louças", desc: "Porcelana branca sextavada." },
-          { id: 3, name: "Taça Bico de Jaca", price: 1.35, category: "Taças", desc: "Disponível em azul e transparente." },
-          { id: 4, name: "Kit Feijoada (Barro)", price: 45.00, category: "Temáticos", desc: "Panelas e cumbucas de barro." },
-          { id: 5, name: "Tigela Ramikin 150ml", price: 1.00, category: "Louças", desc: "Ideal para escondidinhos e caldos." },
-          { id: 6, name: "Trio Talheres Inox", price: 2.50, category: "Talheres", desc: "Garfo, faca e colher de mesa." },
-        ];
+        // --- DADOS ---
+        const products = [
+          { id: 1, name: "Rechaud Inox 8L", price: 50.00, category: "Rechauds", desc: "Banho Maria para manter a comida quente." },
+          { id: 2, name: "Prato Prisma Refeição", price: 1.85, category: "Louças", desc: "Porcelana branca sextavada." },
+          { id: 3, name: "Taça Bico de Jaca", price: 1.35, category: "Taças", desc: "Disponível em azul e transparente." },
+          { id: 4, name: "Kit Feijoada (Barro)", price: 45.00, category: "Temáticos", desc: "Panelas e cumbucas de barro." },
+          { id: 5, name: "Tigela Ramikin 150ml", price: 1.00, category: "Louças", desc: "Ideal para escondidinhos e caldos." },
+          { id: 6, name: "Trio Talheres Inox", price: 2.50, category: "Talheres", desc: "Garfo, faca e colher de mesa." },
+        ];
 
-        // --- APLICAÇÃO ---
-        const LabetaRentalApp = () => {
-          const [view, setView] = useState('home'); 
-          const [cart, setCart] = useState([]);
-          const [orders, setOrders] = useState([]); 
-          const [isChatOpen, setIsChatOpen] = useState(false);
+        // --- APLICAÇÃO ---
+        const LabetaRentalApp = () => {
+          const [view, setView] = useState('home'); 
+          const [cart, setCart] = useState([]);
+          const [orders, setOrders] = useState([]); 
+          const [isChatOpen, setIsChatOpen] = useState(false);
 
-          const whatsappNumber = "5521981438824";
-          const whatsappMessage = encodeURIComponent("Olá! Gostaria de fazer um orçamento de aluguel de louças.");
-          const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+          // Número de WhatsApp da Labeta (para onde a mensagem será enviada)
+          const whatsappNumber = "5521981438824";
+          const whatsappMessage = encodeURIComponent("Olá! Gostaria de fazer um orçamento de aluguel de louças.");
+          const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
-          const addToCart = (product) => {
-            setCart([...cart, product]);
-            alert(`${product.name} adicionado!`);
-          };
+          const addToCart = (product) => {
+            setCart([...cart, product]);
+            alert(`${product.name} adicionado!`);
+          };
 
-          // --- NOVA FUNÇÃO: REMOVER DO CARRINHO ---
-          const removeFromCart = (indexToRemove) => {
-            // Cria um novo array filtrando o item que tem o índice igual ao clicado
-            const newCart = cart.filter((_, index) => index !== indexToRemove);
-            setCart(newCart);
-          };
+          // Função para remover item do carrinho
+          const removeFromCart = (indexToRemove) => {
+            const newCart = cart.filter((_, index) => index !== indexToRemove);
+            setCart(newCart);
+          };
 
-          const submitOrder = () => {
-            const newOrder = {
-              id: Math.floor(Math.random() * 10000),
-              items: cart,
-              total: cart.reduce((acc, item) => acc + item.price, 0),
-              status: 'Em Análise',
-              customer: 'Cliente Novo',
-              date: new Date().toLocaleDateString()
-            };
-            setOrders([...orders, newOrder]);
-            setCart([]);
-            alert("Pedido enviado! Nossa equipe confirmará via WhatsApp.");
-          };
+          // Função para agrupar itens (usada no Carrinho e na Mensagem)
+          const groupItems = (items) => {
+            const counts = {};
+            items.forEach(item => {
+              counts[item.name] = (counts[item.name] || 0) + 1;
+            });
+            return Object.entries(counts); 
+          };
 
-          const updateStatus = (orderId, newStatus) => {
-            setOrders(orders.map(order => 
-              order.id === orderId ? { ...order, status: newStatus } : order
-            ));
-          };
 
-          const groupItems = (items) => {
-            const counts = {};
-            items.forEach(item => {
-              counts[item.name] = (counts[item.name] || 0) + 1;
-            });
-            return Object.entries(counts); 
-          };
+          // --- FUNÇÃO submitOrder ATUALIZADA COM O COMANDO DO WHATSAPP ---
+          const submitOrder = () => {
+            const now = new Date();
+            // Obtém o horário formatado (Ex: 02:15)
+            const orderTime = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-          return (
-            <div className="font-sans bg-gray-50 min-h-screen pb-24">
-              
-              {/* Header */}
-              <nav className="bg-slate-900 text-white p-4 sticky top-0 z-50 shadow-lg">
-                <div className="container mx-auto flex justify-between items-center">
-                  <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('home')}>
-                    <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center text-slate-900 font-bold">L</div>
-                    <h1 className="text-xl font-serif tracking-wide hidden md:block">LABETA MESA POSTA</h1>
-                    <h1 className="text-xl font-serif tracking-wide md:hidden">LABETA</h1>
-                  </div>
-                  <div className="flex gap-4 items-center">
-                    <button onClick={() => setView('admin')} className="text-sm text-gray-300 hover:text-white hidden md:block">Área Admin</button>
-                    <button onClick={() => setView('cart')} className="relative bg-yellow-600 px-4 py-2 rounded-lg hover:bg-yellow-500 text-slate-900 font-bold flex items-center gap-2">
-                      <ShoppingCart size={20} />
-                      <span className="hidden md:inline">Carrinho</span> ({cart.length})
-                    </button>
-                  </div>
-                </div>
-              </nav>
+            // 1. CONSTRUÇÃO DA MENSAGEM DO WHATSAPP
+            let orderSummary = `✅ *NOVO PEDIDO DE ORÇAMENTO LABETA* ✅\n\n`;
+            orderSummary += `📅 *Horário do Pedido:* ${orderTime}\n\n`; // Inclui o horário
+            orderSummary += `📝 *Itens Solicitados*:\n`;
 
-              {/* Main Content */}
-              <main className="container mx-auto p-4 md:p-6">
-                
-                {/* VITRINE */}
-                {view === 'home' && (
-                  <div>
-                    <div className="text-center mb-8 md:mb-12">
-                      <h2 className="text-3xl md:text-4xl font-serif text-slate-800 mb-2">Aluguel de Louças</h2>
-                      <p className="text-gray-600">Elegância e praticidade para o seu evento.</p>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                      {products.map((product) => (
-                        <div key={product.id} className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden border border-gray-100 flex flex-col">
-                          <div className="h-48 bg-gray-200 flex items-center justify-center text-gray-400">
-                              <div className="text-center p-4">
-                                <span className="block text-2xl font-serif text-gray-300 mb-2">📷</span>
-                                <span className="text-sm">{product.name}</span>
-                              </div>
-                          </div>
-                          <div className="p-4 flex-1 flex flex-col justify-between">
-                            <div>
-                                <h3 className="text-lg font-bold text-slate-800">{product.name}</h3>
-                                <p className="text-sm text-gray-500 mb-2">{product.desc}</p>
-                            </div>
-                            <div>
-                                <p className="text-yellow-600 font-bold text-lg mt-1">R$ {product.price.toFixed(2)}</p>
-                                <button 
-                                onClick={() => addToCart(product)}
-                                className="w-full mt-3 bg-slate-900 text-white py-2 rounded hover:bg-slate-700 transition text-sm uppercase tracking-wide"
-                                >
-                                Adicionar
-                                </button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+            // Agrupa e lista os itens
+            const grouped = groupItems(cart);
+            const totalValue = cart.reduce((acc, item) => acc + item.price, 0);
 
-                {/* CARRINHO COM BOTÃO DE REMOVER */}
-                {view === 'cart' && (
-                  <div className="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                    <h2 className="text-2xl font-bold mb-6">Resumo do Pedido</h2>
-                    {cart.length === 0 ? (
-                      <div className="text-center py-8">
-                        <p className="text-gray-500">Seu carrinho está vazio.</p>
-                        <button onClick={() => setView('home')} className="mt-4 text-blue-600 underline">Voltar aos produtos</button>
-                      </div>
-                    ) : (
-                      <>
-                        <ul className="divide-y divide-gray-200 mb-6">
-                          {cart.map((item, index) => (
-                            <li key={index} className="py-4 flex justify-between items-center group">
-                              <div className="flex flex-col">
-                                <span className="font-medium text-slate-800">{item.name}</span>
-                                <span className="text-sm text-gray-500">Unitário: R$ {item.price.toFixed(2)}</span>
-                              </div>
-                              
-                              <div className="flex items-center gap-4">
-                                <span className="font-bold text-slate-800">R$ {item.price.toFixed(2)}</span>
-                                
-                                {/* BOTÃO DE REMOVER */}
-                                <button 
-                                    onClick={() => removeFromCart(index)}
-                                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full transition"
-                                    title="Remover item"
-                                >
-                                    <Trash size={18} />
-                                </button>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                        <div className="flex justify-between items-center border-t pt-4 bg-gray-50 p-4 rounded">
-                          <span className="text-xl font-bold">Total Estimado:</span>
-                          <span className="text-xl text-yellow-600 font-bold">R$ {cart.reduce((a,b)=>a+b.price, 0).toFixed(2)}</span>
-                        </div>
-                        <button 
-                          onClick={submitOrder}
-                          className="w-full mt-6 bg-green-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-md"
-                        >
-                          Confirmar Reserva
-                        </button>
-                      </>
-                    )}
-                  </div>
-                )}
+            grouped.forEach(([name, qtd]) => {
+                orderSummary += `- ${qtd}x ${name}\n`;
+            });
 
-                {/* ADMIN */}
-                {view === 'admin' && (
-                  <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg">
-                    <h2 className="text-2xl font-bold mb-6 flex items-center gap-2"><User /> Painel Administrativo</h2>
-                    {orders.length === 0 ? (
-                        <p className="text-gray-500">Nenhum pedido realizado ainda.</p>
-                    ) : (
-                        <div className="overflow-x-auto">
-                        <table className="w-full text-left text-sm md:text-base border-collapse">
-                            <thead className="bg-gray-100">
-                            <tr>
-                                <th className="p-3 border-b">ID</th>
-                                <th className="p-3 border-b w-1/3">Itens do Pedido</th> 
-                                <th className="p-3 border-b">Total</th>
-                                <th className="p-3 border-b">Status</th>
-                                <th className="p-3 border-b">Ação</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {orders.map(order => (
-                                <tr key={order.id} className="border-b hover:bg-gray-50">
-                                <td className="p-3 align-top font-mono text-gray-500">#{order.id}</td>
-                                
-                                <td className="p-3 align-top">
-                                    <div className="bg-gray-50 p-2 rounded border border-gray-100">
-                                        <ul className="text-sm text-gray-700 space-y-1">
-                                            {groupItems(order.items).map(([name, qtd], i) => (
-                                                <li key={i} className="flex justify-between">
-                                                    <span>{name}</span>
-                                                    <span className="font-bold text-xs bg-gray-200 px-2 py-0.5 rounded-full text-gray-700">x{qtd}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </td>
+            orderSummary += `\n💵 *Total Estimado:* R$ ${totalValue.toFixed(2)}\n\n`;
+            orderSummary += `Aguarde a confirmação da nossa equipe!`;
 
-                                <td className="p-3 align-top font-bold text-yellow-700">R$ {order.total.toFixed(2)}</td>
-                                <td className="p-3 align-top">
-                                    <span className={`px-2 py-1 rounded text-xs font-bold inline-block ${
-                                    order.status === 'Em Análise' ? 'bg-yellow-100 text-yellow-800' :
-                                    order.status === 'Confirmado' ? 'bg-green-100 text-green-800' :
-                                    'bg-red-100 text-red-800'
-                                    }`}>
-                                    {order.status}
-                                    </span>
-                                </td>
-                                <td className="p-3 align-top">
-                                    <div className="flex gap-2">
-                                        {order.status === 'Em Análise' && (
-                                        <>
-                                            <button onClick={() => updateStatus(order.id, 'Confirmado')} className="bg-green-500 text-white p-2 rounded hover:bg-green-600" title="Aprovar"><Check size={16}/></button>
-                                            <button onClick={() => updateStatus(order.id, 'Recusado')} className="bg-red-500 text-white p-2 rounded hover:bg-red-600" title="Recusar"><X size={16}/></button>
-                                        </>
-                                        )}
-                                    </div>
-                                </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                        </div>
-                    )}
-                  </div>
-                )}
-              </main>
+            // Codifica a mensagem para URL e cria o link final
+            const encodedClientMessage = encodeURIComponent(orderSummary);
+            const clientWhatsappLink = `https://wa.me/${whatsappNumber}?text=${encodedClientMessage}`;
+            
+            // 2. SALVAR O PEDIDO NO ADMIN
+            const newOrder = {
+              id: Math.floor(Math.random() * 10000),
+              items: cart,
+              total: totalValue,
+              status: 'Em Análise',
+              customer: 'Cliente Novo',
+              date: now.toLocaleDateString()
+            };
+            setOrders([...orders, newOrder]);
+            setCart([]);
+            alert("Pedido enviado! Uma nova janela será aberta para você confirmar via WhatsApp.");
+            
+            // 3. ABRIR WHATSAPP COM A MENSAGEM
+            window.open(clientWhatsappLink, '_blank');
+          };
+          // --- FIM DA FUNÇÃO submitOrder ATUALIZADA ---
 
-              {/* WHATSAPP & CHAT */}
-              <a 
-                href={whatsappLink} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white px-6 py-4 rounded-full shadow-2xl flex items-center gap-3 transition transform hover:-translate-y-1"
-              >
-                <Phone size={24} fill="white" />
-                <span className="font-bold text-lg hidden md:inline">Falar no WhatsApp</span>
-                <span className="font-bold text-lg md:hidden">WhatsApp</span>
-              </a>
+          const updateStatus = (orderId, newStatus) => {
+            setOrders(orders.map(order => 
+              order.id === orderId ? { ...order, status: newStatus } : order
+            ));
+          };
 
-              <div className="fixed bottom-24 right-6 z-40">
-                <button 
-                   onClick={() => setIsChatOpen(!isChatOpen)}
-                   className="bg-slate-800 hover:bg-slate-900 text-white p-3 rounded-full shadow-lg flex items-center justify-center w-12 h-12"
-                   title="Chat Interno"
-                >
-                   <MessageCircle size={20} />
-                </button>
-              </div>
+          return (
+            <div className="font-sans bg-gray-50 min-h-screen pb-24">
+              
+              {/* Header */}
+              <nav className="bg-slate-900 text-white p-4 sticky top-0 z-50 shadow-lg">
+                <div className="container mx-auto flex justify-between items-center">
+                  <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('home')}>
+                    <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center text-slate-900 font-bold">L</div>
+                    <h1 className="text-xl font-serif tracking-wide hidden md:block">LABETA MESA POSTA</h1>
+                    <h1 className="text-xl font-serif tracking-wide md:hidden">LABETA</h1>
+                  </div>
+                  <div className="flex gap-4 items-center">
+                    <button onClick={() => setView('admin')} className="text-sm text-gray-300 hover:text-white hidden md:block">Área Admin</button>
+                    <button onClick={() => setView('cart')} className="relative bg-yellow-600 px-4 py-2 rounded-lg hover:bg-yellow-500 text-slate-900 font-bold flex items-center gap-2">
+                      <ShoppingCart size={20} />
+                      <span className="hidden md:inline">Carrinho</span> ({cart.length})
+                    </button>
+                  </div>
+                </div>
+              </nav>
 
-               {isChatOpen && (
-                  <div className="fixed bottom-40 right-6 z-40 bg-white w-72 h-80 rounded-xl shadow-2xl flex flex-col overflow-hidden border border-gray-200">
-                    <div className="bg-slate-900 p-3 flex justify-between items-center text-white">
-                      <h3 className="font-bold text-sm">Suporte Online</h3>
-                      <button onClick={() => setIsChatOpen(false)}><X size={16} /></button>
-                    </div>
-                    <div className="flex-1 p-3 bg-gray-50 overflow-y-auto text-sm">
-                       <p className="text-center text-gray-400 my-4">Inicie uma conversa...</p>
-                    </div>
-                    <div className="p-2 border-t bg-white">
-                      <input type="text" placeholder="Digite..." className="w-full border rounded px-2 py-1 text-sm" />
-                    </div>
-                  </div>
-                )}
+              {/* Main Content */}
+              <main className="container mx-auto p-4 md:p-6">
+                
+                {/* VITRINE */}
+                {view === 'home' && (
+                  <div>
+                    <div className="text-center mb-8 md:mb-12">
+                      <h2 className="text-3xl md:text-4xl font-serif text-slate-800 mb-2">Aluguel de Louças</h2>
+                      <p className="text-gray-600">Elegância e praticidade para o seu evento.</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                      {products.map((product) => (
+                        <div key={product.id} className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden border border-gray-100 flex flex-col">
+                          <div className="h-48 bg-gray-200 flex items-center justify-center text-gray-400">
+                              <div className="text-center p-4">
+                                <span className="block text-2xl font-serif text-gray-300 mb-2">📷</span>
+                                <span className="text-sm">{product.name}</span>
+                              </div>
+                          </div>
+                          <div className="p-4 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-800">{product.name}</h3>
+                                <p className="text-sm text-gray-500 mb-2">{product.desc}</p>
+                            </div>
+                            <div>
+                                <p className="text-yellow-600 font-bold text-lg mt-1">R$ {product.price.toFixed(2)}</p>
+                                <button 
+                                onClick={() => addToCart(product)}
+                                className="w-full mt-3 bg-slate-900 text-white py-2 rounded hover:bg-slate-700 transition text-sm uppercase tracking-wide"
+                                >
+                                Adicionar
+                                </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-            </div>
-          );
-        };
+                {/* CARRINHO COM BOTÃO DE REMOVER */}
+                {view === 'cart' && (
+                  <div className="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                    <h2 className="text-2xl font-bold mb-6">Resumo do Pedido</h2>
+                    {cart.length === 0 ? (
+                      <div className="text-center py-8">
+                        <p className="text-gray-500">Seu carrinho está vazio.</p>
+                        <button onClick={() => setView('home')} className="mt-4 text-blue-600 underline">Voltar aos produtos</button>
+                      </div>
+                    ) : (
+                      <>
+                        <ul className="divide-y divide-gray-200 mb-6">
+                          {cart.map((item, index) => (
+                            <li key={index} className="py-4 flex justify-between items-center group">
+                              <div className="flex flex-col">
+                                <span className="font-medium text-slate-800">{item.name}</span>
+                                <span className="text-sm text-gray-500">Unitário: R$ {item.price.toFixed(2)}</span>
+                              </div>
+                              
+                              <div className="flex items-center gap-4">
+                                <span className="font-bold text-slate-800">R$ {item.price.toFixed(2)}</span>
+                                
+                                {/* BOTÃO DE REMOVER */}
+                                <button 
+                                    onClick={() => removeFromCart(index)}
+                                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full transition"
+                                    title="Remover item"
+                                >
+                                    <Trash size={18} />
+                                </button>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="flex justify-between items-center border-t pt-4 bg-gray-50 p-4 rounded">
+                          <span className="text-xl font-bold">Total Estimado:</span>
+                          <span className="text-xl text-yellow-600 font-bold">R$ {cart.reduce((a,b)=>a+b.price, 0).toFixed(2)}</span>
+                        </div>
+                        <button 
+                          onClick={submitOrder}
+                          className="w-full mt-6 bg-green-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-md"
+                        >
+                          Confirmar Reserva
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<LabetaRentalApp />);
-    </script>
+                {/* ADMIN */}
+                {view === 'admin' && (
+                  <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg">
+                    <h2 className="text-2xl font-bold mb-6 flex items-center gap-2"><User /> Painel Administrativo</h2>
+                    {orders.length === 0 ? (
+                        <p className="text-gray-500">Nenhum pedido realizado ainda.</p>
+                    ) : (
+                        <div className="overflow-x-auto">
+                        <table className="w-full text-left text-sm md:text-base border-collapse">
+                            <thead className="bg-gray-100">
+                            <tr>
+                                <th className="p-3 border-b">ID</th>
+                                <th className="p-3 border-b w-1/3">Itens do Pedido</th> 
+                                <th className="p-3 border-b">Total</th>
+                                <th className="p-3 border-b">Status</th>
+                                <th className="p-3 border-b">Ação</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {orders.map(order => (
+                                <tr key={order.id} className="border-b hover:bg-gray-50">
+                                <td className="p-3 align-top font-mono text-gray-500">#{order.id}</td>
+                                
+                                <td className="p-3 align-top">
+                                    <div className="bg-gray-50 p-2 rounded border border-gray-100">
+                                        <ul className="text-sm text-gray-700 space-y-1">
+                                            {groupItems(order.items).map(([name, qtd], i) => (
+                                                <li key={i} className="flex justify-between">
+                                                    <span>{name}</span>
+                                                    <span className="font-bold text-xs bg-gray-200 px-2 py-0.5 rounded-full text-gray-700">x{qtd}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </td>
+
+                                <td className="p-3 align-top font-bold text-yellow-700">R$ {order.total.toFixed(2)}</td>
+                                <td className="p-3 align-top">
+                                    <span className={`px-2 py-1 rounded text-xs font-bold inline-block ${
+                                    order.status === 'Em Análise' ? 'bg-yellow-100 text-yellow-800' :
+                                    order.status === 'Confirmado' ? 'bg-green-100 text-green-800' :
+                                    'bg-red-100 text-red-800'
+                                    }`}>
+                                    {order.status}
+                                    </span>
+                                </td>
+                                <td className="p-3 align-top">
+                                    <div className="flex gap-2">
+                                        {order.status === 'Em Análise' && (
+                                        <>
+                                            <button onClick={() => updateStatus(order.id, 'Confirmado')} className="bg-green-500 text-white p-2 rounded hover:bg-green-600" title="Aprovar"><Check size={16}/></button>
+                                            <button onClick={() => updateStatus(order.id, 'Recusado')} className="bg-red-500 text-white p-2 rounded hover:bg-red-600" title="Recusar"><X size={16}/></button>
+                                        </>
+                                        )}
+                                    </div>
+                                </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                        </div>
+                    )}
+                  </div>
+                )}
+              </main>
+
+              {/* WHATSAPP & CHAT */}
+              <a 
+                href={whatsappLink} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white px-6 py-4 rounded-full shadow-2xl flex items-center gap-3 transition transform hover:-translate-y-1"
+              >
+                <Phone size={24} fill="white" />
+                <span className="font-bold text-lg hidden md:inline">Falar no WhatsApp</span>
+                <span className="font-bold text-lg md:hidden">WhatsApp</span>
+              </a>
+
+              <div className="fixed bottom-24 right-6 z-40">
+                <button 
+                   onClick={() => setIsChatOpen(!isChatOpen)}
+                   className="bg-slate-800 hover:bg-slate-900 text-white p-3 rounded-full shadow-lg flex items-center justify-center w-12 h-12"
+                   title="Chat Interno"
+                >
+                   <MessageCircle size={20} />
+                </button>
+              </div>
+
+               {isChatOpen && (
+                  <div className="fixed bottom-40 right-6 z-40 bg-white w-72 h-80 rounded-xl shadow-2xl flex flex-col overflow-hidden border border-gray-200">
+                    <div className="bg-slate-900 p-3 flex justify-between items-center text-white">
+                      <h3 className="font-bold text-sm">Suporte Online</h3>
+                      <button onClick={() => setIsChatOpen(false)}><X size={16} /></button>
+                    </div>
+                    <div className="flex-1 p-3 bg-gray-50 overflow-y-auto text-sm">
+                       <p className="text-center text-gray-400 my-4">Inicie uma conversa...</p>
+                    </div>
+                    <div className="p-2 border-t bg-white">
+                      <input type="text" placeholder="Digite..." className="w-full border rounded px-2 py-1 text-sm" />
+                    </div>
+                  </div>
+                )}
+
+            </div>
+          );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<LabetaRentalApp />);
+    </script>
 </body>
 </html>
