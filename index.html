@@ -26,13 +26,14 @@
     <script type="text/babel">
         const { useState } = React;
 
-        // --- ÍCONES (Recriados manualmente para funcionar sem instalação) ---
+        // --- ÍCONES ---
         const ShoppingCart = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>;
         const MessageCircle = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>;
         const Check = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
         const X = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
         const User = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
         const Phone = ({size = 24, fill = "none"}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>;
+        const ClipboardList = ({size = 24}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>;
 
         // --- DADOS ---
         const products = [
@@ -46,12 +47,11 @@
 
         // --- APLICAÇÃO ---
         const LabetaRentalApp = () => {
-          const [view, setView] = useState('home'); // home, cart, admin
+          const [view, setView] = useState('home'); 
           const [cart, setCart] = useState([]);
           const [orders, setOrders] = useState([]); 
           const [isChatOpen, setIsChatOpen] = useState(false);
 
-          // Configuração do WhatsApp
           const whatsappNumber = "5521981438824";
           const whatsappMessage = encodeURIComponent("Olá! Gostaria de fazer um orçamento de aluguel de louças.");
           const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
@@ -81,10 +81,19 @@
             ));
           };
 
+          // Função auxiliar para contar itens iguais
+          const groupItems = (items) => {
+            const counts = {};
+            items.forEach(item => {
+              counts[item.name] = (counts[item.name] || 0) + 1;
+            });
+            return Object.entries(counts); // Retorna [['Prato', 2], ['Taça', 1]]
+          };
+
           return (
             <div className="font-sans bg-gray-50 min-h-screen pb-24">
               
-              {/* 1. Header */}
+              {/* Header */}
               <nav className="bg-slate-900 text-white p-4 sticky top-0 z-50 shadow-lg">
                 <div className="container mx-auto flex justify-between items-center">
                   <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('home')}>
@@ -102,7 +111,7 @@
                 </div>
               </nav>
 
-              {/* 2. Conteúdo Principal */}
+              {/* Main Content */}
               <main className="container mx-auto p-4 md:p-6">
                 
                 {/* VITRINE */}
@@ -117,7 +126,6 @@
                       {products.map((product) => (
                         <div key={product.id} className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden border border-gray-100 flex flex-col">
                           <div className="h-48 bg-gray-200 flex items-center justify-center text-gray-400">
-                              {/* Placeholder para imagem */}
                               <div className="text-center p-4">
                                 <span className="block text-2xl font-serif text-gray-300 mb-2">📷</span>
                                 <span className="text-sm">{product.name}</span>
@@ -173,13 +181,12 @@
                         >
                           Confirmar Reserva
                         </button>
-                        <p className="text-xs text-center text-gray-500 mt-2">Um atendente revisará o estoque e confirmará seu pedido.</p>
                       </>
                     )}
                   </div>
                 )}
 
-                {/* ADMIN */}
+                {/* ADMIN COM LISTA DE PRODUTOS */}
                 {view === 'admin' && (
                   <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg">
                     <h2 className="text-2xl font-bold mb-6 flex items-center gap-2"><User /> Painel Administrativo</h2>
@@ -187,22 +194,38 @@
                         <p className="text-gray-500">Nenhum pedido realizado ainda.</p>
                     ) : (
                         <div className="overflow-x-auto">
-                        <table className="w-full text-left text-sm md:text-base">
+                        <table className="w-full text-left text-sm md:text-base border-collapse">
                             <thead className="bg-gray-100">
                             <tr>
-                                <th className="p-3">ID</th>
-                                <th className="p-3">Total</th>
-                                <th className="p-3">Status</th>
-                                <th className="p-3">Ação</th>
+                                <th className="p-3 border-b">ID</th>
+                                <th className="p-3 border-b w-1/3">Itens do Pedido</th> 
+                                <th className="p-3 border-b">Total</th>
+                                <th className="p-3 border-b">Status</th>
+                                <th className="p-3 border-b">Ação</th>
                             </tr>
                             </thead>
                             <tbody>
                             {orders.map(order => (
-                                <tr key={order.id} className="border-b">
-                                <td className="p-3">#{order.id}</td>
-                                <td className="p-3">R$ {order.total.toFixed(2)}</td>
-                                <td className="p-3">
-                                    <span className={`px-2 py-1 rounded text-xs font-bold ${
+                                <tr key={order.id} className="border-b hover:bg-gray-50">
+                                <td className="p-3 align-top font-mono text-gray-500">#{order.id}</td>
+                                
+                                {/* --- NOVA COLUNA: LISTA DE ITENS --- */}
+                                <td className="p-3 align-top">
+                                    <div className="bg-gray-50 p-2 rounded border border-gray-100">
+                                        <ul className="text-sm text-gray-700 space-y-1">
+                                            {groupItems(order.items).map(([name, qtd], i) => (
+                                                <li key={i} className="flex justify-between">
+                                                    <span>{name}</span>
+                                                    <span className="font-bold text-xs bg-gray-200 px-2 py-0.5 rounded-full text-gray-700">x{qtd}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </td>
+
+                                <td className="p-3 align-top font-bold text-yellow-700">R$ {order.total.toFixed(2)}</td>
+                                <td className="p-3 align-top">
+                                    <span className={`px-2 py-1 rounded text-xs font-bold inline-block ${
                                     order.status === 'Em Análise' ? 'bg-yellow-100 text-yellow-800' :
                                     order.status === 'Confirmado' ? 'bg-green-100 text-green-800' :
                                     'bg-red-100 text-red-800'
@@ -210,13 +233,15 @@
                                     {order.status}
                                     </span>
                                 </td>
-                                <td className="p-3 flex gap-2">
-                                    {order.status === 'Em Análise' && (
-                                    <>
-                                        <button onClick={() => updateStatus(order.id, 'Confirmado')} className="bg-green-500 text-white p-2 rounded hover:bg-green-600" title="Aprovar"><Check size={16}/></button>
-                                        <button onClick={() => updateStatus(order.id, 'Recusado')} className="bg-red-500 text-white p-2 rounded hover:bg-red-600" title="Recusar"><X size={16}/></button>
-                                    </>
-                                    )}
+                                <td className="p-3 align-top">
+                                    <div className="flex gap-2">
+                                        {order.status === 'Em Análise' && (
+                                        <>
+                                            <button onClick={() => updateStatus(order.id, 'Confirmado')} className="bg-green-500 text-white p-2 rounded hover:bg-green-600" title="Aprovar"><Check size={16}/></button>
+                                            <button onClick={() => updateStatus(order.id, 'Recusado')} className="bg-red-500 text-white p-2 rounded hover:bg-red-600" title="Recusar"><X size={16}/></button>
+                                        </>
+                                        )}
+                                    </div>
                                 </td>
                                 </tr>
                             ))}
@@ -228,7 +253,7 @@
                 )}
               </main>
 
-              {/* --- BOTÃO DE WHATSAPP DIRETO --- */}
+              {/* WHATSAPP & CHAT */}
               <a 
                 href={whatsappLink} 
                 target="_blank" 
@@ -240,7 +265,6 @@
                 <span className="font-bold text-lg md:hidden">WhatsApp</span>
               </a>
 
-              {/* CHAT INTERNO DO SITE */}
               <div className="fixed bottom-24 right-6 z-40">
                 <button 
                    onClick={() => setIsChatOpen(!isChatOpen)}
